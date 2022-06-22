@@ -1,0 +1,50 @@
+### Requires namespace/project to be created and IBM Entitlement Key
+### placed in ibm-entitlement-key secret
+### oc create secret docker-registry ibm-entitlement-key --docker-server=cp.icr.io --docker-username=cp --docker-password=ENTITLEMENT_KEY --docker-email=OCP_LOGIN_CREDENTIALS
+### Get Entitlement Key from https://myibm.ibm.com/products-services/containerlibrary
+---
+# create namespace
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: was-liberty
+  labels:
+    name: was-liberty
+---
+# IBM Operator Catalog
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-operator-catalog
+  namespace: openshift-marketplace
+spec:
+  displayName: ibm-operator-catalog 
+  publisher: IBM Content
+  sourceType: grpc
+  image: icr.io/cpopen/ibm-operator-catalog
+  updateStrategy:
+    registryPoll:
+      interval: 45m
+---
+# create operator group
+apiVersion: operators.coreos.com/v1alpha2
+kind: OperatorGroup
+metadata:
+  name: was-liberty
+  namespace: was-liberty
+spec:
+  targetNamespaces:
+  - was-liberty
+---
+# install WAS Liberty Operator
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: was-liberty
+  namespace: was-liberty
+spec:
+  installPlanApproval: Automatic
+  name: ibm-websphere-liberty
+  source: ibm-operator-catalog
+  sourceNamespace: openshift-marketplace
+...
