@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: was-deploy-app 
+spec:
+  params:
+      - name: APP_NAME
+        description: The name of the application
+        default: 'was-tekton'
+        type: string
+      - name: APP_VERSION
+        description: The version of the application
+        default: '1.0'
+        type: string
+      - name: DEPLOY_PROJECT
+        description: The project where you deploy the app
+        default: 'was'
+        type: string  
+      - name: MAX_PODS
+        description: max numnber of pods to scale
+        default: '2'
+        type: string  
+  steps:
+      - name: create-liberty-deployment
+        image: quay.io/openshift/origin-cli:latest
+        workingDir: /workspace/source
+        command: ["/bin/bash", "-c"]
+        args:
+          - |-
+            cat <<EOF | oc create -f -
+            apiVersion: liberty.websphere.ibm.com/v1
+            kind: WebSphereLibertyApplication
+            metadata:
+               name: ${params.APP_NAME}
+               namespace: ${params.DEPLOY_PROJECT}
+            spec:
+               license:
+                  accept: true
+                  edition: IBM WebSphere Application Server
+                  metric: Virtual Processor Core (VPC)
+                  productEntitlementSource: Standalone
+               expose: true 
+               applicationName: ${params.APP_NAME}
+               autoscaling:
+                  maxReplicas: ${params.MAX_PODS}
+                  minReplicas: 1
+                  targetCPUUtilizationPercentage: 50
+               pullPolicy: Always
+               manageTLS: true
+               service:
+                  port: 9443
+                  type: ClusterIP
+               applicationImage: >-
+                  image-registry.openshift-image-registry.svc:5000/$(params.DEPLOY_PROJECT)/$(params.APP_NAME):$(params.APP_VERSION) 
+            EOF

@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: was-conform-appname
+spec:
+  params:
+      - name: APP_NAME
+        description: The name of the application
+        default: 'was-modresorts'
+        type: string
+  results:
+      - name: APP_NAME_CONFORM
+
+  steps:
+      - name: to-lower
+        image: alpine
+        script: |
+                echo -n $(params.APP_NAME) | sed 's/ //g' | tr '[:upper:]' '[:lower:]' | tee $(results.APP_NAME_CONFORM.path);
