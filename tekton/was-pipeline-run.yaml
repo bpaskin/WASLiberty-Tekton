@@ -6,11 +6,11 @@ spec:
 
   params:
   - name: APP_NAME
-    value: WAS-Tekton
+    value: mod-resorts
   - name: APP_VERSION
     value: '1.0'
   - name: DEPLOY_PROJECT
-    value: 'was'
+    value: 'was-liberty'
   - name: GIT_URL
     value: 'https://github.com/bpaskin/WASLiberty-Tekton'
   - name: MAX_PODS

@@ -16,7 +16,7 @@ spec:
       description: The version of the application
       name: APP_VERSION
       type: string
-    - default: was
+    - default: was-liberty
       description: The project where you deploy the app
       name: DEPLOY_PROJECT
       type: string
@@ -102,9 +102,6 @@ spec:
           value: $(params.DEPLOY_PROJECT)
         - name: MAX_PODS
           value: $(params.MAX_PODS)
-      workspaces:
-        - name: output
-          workspace: shared-workspace
 
   results:
     - name: APP_NAME_CONFORM

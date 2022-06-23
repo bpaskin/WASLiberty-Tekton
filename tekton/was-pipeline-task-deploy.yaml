@@ -27,12 +27,12 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
           - |-
-            cat <<EOF | oc create -f -
+            cat <<EOF | oc apply -f -
             apiVersion: liberty.websphere.ibm.com/v1
             kind: WebSphereLibertyApplication
             metadata:
-               name: ${params.APP_NAME}
-               namespace: ${params.DEPLOY_PROJECT}
+               name: $(params.APP_NAME)
+               namespace: $(params.DEPLOY_PROJECT)
             spec:
                license:
                   accept: true
@@ -40,9 +40,9 @@ spec:
                   metric: Virtual Processor Core (VPC)
                   productEntitlementSource: Standalone
                expose: true 
-               applicationName: ${params.APP_NAME}
+               applicationName: $(params.APP_NAME)
                autoscaling:
-                  maxReplicas: ${params.MAX_PODS}
+                  maxReplicas: $(params.MAX_PODS)
                   minReplicas: 1
                   targetCPUUtilizationPercentage: 50
                pullPolicy: Always
@@ -51,5 +51,5 @@ spec:
                   port: 9443
                   type: ClusterIP
                applicationImage: >-
-                  image-registry.openshift-image-registry.svc:5000/$(params.DEPLOY_PROJECT)/$(params.APP_NAME):$(params.APP_VERSION) 
+                  image-registry.openshift-image-registry.svc:5000/$(params.DEPLOY_PROJECT)/$(params.APP_NAME):$(params.APP_VERSION)
             EOF
