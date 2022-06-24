@@ -1,0 +1,56 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: was-triggers-template
+spec:
+
+  params:
+  - name: APP_NAME
+  - name: APP_VERSION
+  - name: DEPLOY_PROJECT
+  - name: GIT_URL
+  - name: MAX_PODS
+
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+       generateName: was-deploy-
+
+    spec:
+      serviceAccountName: pipeline
+
+      pipelineRef:
+        name: was-pipeline
+
+      params:
+      - name: APP_NAME
+        value: $(tt.params.APP_NAME)
+      - name: APP_VERSION
+        value: $(tt.params.APP_VERSION)
+      - name: DEPLOY_PROJECT
+        value: $(tt.params.DEPLOY_PROJECT)
+      - name: GIT_URL
+        value: $(tt.params.GIT_URL)
+      - name: MAX_PODS
+        value: $(tt.params.MAX_PODS)
+ 
+      workspaces:
+      - name: maven-settings
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+
+      - name: shared-workspace
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 5Gi
+

@@ -52,4 +52,13 @@ spec:
                   type: ClusterIP
                applicationImage: >-
                   image-registry.openshift-image-registry.svc:5000/$(params.DEPLOY_PROJECT)/$(params.APP_NAME):$(params.APP_VERSION)
+               volumeMounts:
+               - mountPath: /config/variables/
+                 name: variables
+                 readOnly: true
+               volumes:
+               - name: variables
+                 secret:
+                   secretName: open-liberty-vars
+                   optional: true
             EOF

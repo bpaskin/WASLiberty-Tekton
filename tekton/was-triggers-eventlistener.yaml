@@ -1,0 +1,12 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: was-triggers-eventlistener
+spec:
+  serviceAccountName: was-tekton-triggers
+  triggers:
+    - name: was-triggers-deploy
+      bindings:
+        - ref: was-triggers-bindings
+      template:
+        ref: was-triggers-template

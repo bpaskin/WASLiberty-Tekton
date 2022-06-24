@@ -1,0 +1,10 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: el-was-triggers-listener
+spec:
+  port:
+    targetPort: http-listener
+  to:
+    kind: Service
+    name: el-was-triggers-eventlistener

@@ -1,0 +1,17 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: was-triggers-bindings
+spec:
+  params:
+  - name: APP_NAME
+    value: $(body.pull_request.head.repo.name)
+  - name: APP_VERSION
+    value: $(body.pull_request.head.sha)
+  - name: DEPLOY_PROJECT
+    value: was-liberty
+  - name: GIT_URL
+    value: $(body.repository.clone_url)
+  - name: MAX_PODS
+    value: '3'
+
