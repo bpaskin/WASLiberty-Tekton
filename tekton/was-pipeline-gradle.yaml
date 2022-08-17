@@ -1,0 +1,104 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: was-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+    - name: maven-settings
+
+  params:
+    - default: was-modresorts
+      description: The name of the application
+      name: APP_NAME
+      type: string
+    - default: '1.0'
+      description: The version of the application
+      name: APP_VERSION
+      type: string
+    - default: was-liberty
+      description: The project where you deploy the app
+      name: DEPLOY_PROJECT
+      type: string
+    - default: was-stage
+      description: The project where you promote the app
+      name: PROMOTE_PROJECT
+      type: string
+    - default: 'https://github.com/bpaskin/WASLiberty-Tekton'
+      description: The project where you promote the app
+      name: GIT_URL
+      type: string
+    - default: '2'
+      description: max numnber of pods to scale
+      name: MAX_PODS
+      type: string
+
+  tasks:
+    - name: validate-appname
+      taskRef:
+        name: was-conform-appname
+      params:
+        - name: APP_NAME
+          value: $(params.APP_NAME)
+
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+      runAfter:
+        - validate-appname
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.GIT_URL)
+        - name: subdirectory
+          value: ""
+        - name: deleteExisting
+          value: "true"
+
+    - name: compile-code
+      taskRef:
+        name: gradle
+      runAfter:
+        - fetch-repository
+      params:
+        - name: PROJECT_DIR
+          value: ""
+        - name: TASKS
+          value:
+            - build
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: build-container-image
+      taskRef:
+        name: kaniko
+      runAfter:
+        - compile-code
+      params:
+        - name: IMAGE
+          value: image-registry.openshift-image-registry.svc:5000/$(params.DEPLOY_PROJECT)/$(tasks.validate-appname.results.APP_NAME_CONFORM):$(params.APP_VERSION)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: deploy-application
+      taskRef:
+        name: was-deploy-app
+      runAfter:
+        - build-container-image
+      params:
+        - name: APP_NAME
+          value: $(tasks.validate-appname.results.APP_NAME_CONFORM)
+        - name: APP_VERSION
+          value: $(params.APP_VERSION)
+        - name: DEPLOY_PROJECT
+          value: $(params.DEPLOY_PROJECT)
+        - name: MAX_PODS
+          value: $(params.MAX_PODS)
+
+  results:
+    - name: APP_NAME_CONFORM
+      value: $(tasks.validate-appname.results.APP_NAME_CONFORM)
