@@ -1,4 +1,7 @@
 ### Tekton Pipeline for deploy WebSphere Liberty Apps ###
+---
+
+Updated: 17/08/2022 - Support for Gradle.  Please note that the archive needs to be placed in `../../../source/target` for it to work.
 
 --- 
 
@@ -33,6 +36,10 @@ tkn hub install task git-clone -n <project>
 tkn hub install task maven -n <project>
 tkn hub install task kaniko -n <project>
 ```
+needed for gradle:
+```
+tkn hub install task gradle -n <project>
+```
 6. Add task to format the app name (make lowercase, remove spaces)
 ```
 oc apply -f tekton/was-pipeline-task-appname.yaml -n <project>
@@ -48,6 +55,10 @@ oc apply -f tekton/was-pipeline-pvc.yaml -n <project>
 9. Install the Pipeline
 ```
 oc apply -f tekton/was-pipeline.yaml -n <project>
+```
+needed when using gradle:
+```
+oc apply -f tekton/was-pipeline-gradle.yaml -n <project>
 ```
 
 To run the pipeline, a sample Pipeline Run is included
