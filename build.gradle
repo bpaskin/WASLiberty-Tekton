@@ -27,5 +27,5 @@ java {
 }
 
 war {
-    archiveName '../../../target/modresorts-1.0.war'
+    archiveName '../../../source/target/modresorts-1.0.war'
 }
