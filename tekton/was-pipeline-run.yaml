@@ -23,19 +23,9 @@ spec:
 
   workspaces:
   - name: maven-settings
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
+    persistentVolumeClaim:
+       claimName: was-pipeline-pvc
 
   - name: shared-workspace
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 5Gi
+    persistentVolumeClaim:
+       claimName: was-pipeline-pvc
