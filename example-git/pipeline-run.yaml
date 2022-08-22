@@ -1,0 +1,45 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: was-pipeline-run-
+spec:
+
+  params:
+  - name: APP_NAME
+    value: mod-resorts
+  - name: APP_VERSION
+    value: '1.0'
+  - name: DEPLOY_PROJECT
+    value: 'was-liberty'
+  - name: GIT_URL
+    value: 'https://github.com/bpaskin/WASLiberty-Tekton'
+  - name: MAX_PODS
+    value: '5'
+
+  serviceAccountName: pipeline
+
+  pipelineRef:
+    name: was-pipeline
+
+  workspaces:
+  - name: maven-settings
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+
+  - name: shared-workspace
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+
+  - name: basic-auth
+    secret:
+        secretName: github-user-pass

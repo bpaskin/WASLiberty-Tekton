@@ -1,0 +1,109 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: was-pipeline
+  namespace: was-liberty
+spec:
+  params:
+    - default: was-modresorts
+      description: The name of the application
+      name: APP_NAME
+      type: string
+    - default: '1.0'
+      description: The version of the application
+      name: APP_VERSION
+      type: string
+    - default: was-liberty
+      description: The project where you deploy the app
+      name: DEPLOY_PROJECT
+      type: string
+    - default: was-stage
+      description: The project where you promote the app
+      name: PROMOTE_PROJECT
+      type: string
+    - default: 'https://github.com/bpaskin/WASLiberty-Tekton'
+      description: The project where you promote the app
+      name: GIT_URL
+      type: string
+    - default: '2'
+      description: max numnber of pods to scale
+      name: MAX_PODS
+      type: string
+  results:
+    - description: ''
+      name: APP_NAME_CONFORM
+      value: $(tasks.validate-appname.results.APP_NAME_CONFORM)
+  tasks:
+    - name: validate-appname
+      params:
+        - name: APP_NAME
+          value: $(params.APP_NAME)
+      taskRef:
+        kind: Task
+        name: was-conform-appname
+    - name: fetch-repository
+      params:
+        - name: url
+          value: $(params.GIT_URL)
+        - name: subdirectory
+          value: ''
+        - name: deleteExisting
+          value: 'true'
+      runAfter:
+        - validate-appname
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+        - name: basic-auth
+          workspace: basic-auth
+    - name: compile-code
+      params:
+        - name: PROJECT_DIR
+          value: ''
+        - name: TASKS
+          value:
+            - build
+      runAfter:
+        - fetch-repository
+      taskRef:
+        kind: Task
+        name: gradle
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: build-container-image
+      params:
+        - name: IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/$(params.DEPLOY_PROJECT)/$(tasks.validate-appname.results.APP_NAME_CONFORM):$(params.APP_VERSION)
+      runAfter:
+        - compile-code
+      taskRef:
+        kind: Task
+        name: kaniko
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: deploy-application
+      params:
+        - name: APP_NAME
+          value: $(tasks.validate-appname.results.APP_NAME_CONFORM)
+        - name: APP_VERSION
+          value: $(params.APP_VERSION)
+        - name: DEPLOY_PROJECT
+          value: $(params.DEPLOY_PROJECT)
+        - name: MAX_PODS
+          value: $(params.MAX_PODS)
+      runAfter:
+        - build-container-image
+      taskRef:
+        kind: Task
+        name: was-deploy-app
+  workspaces:
+    - name: shared-workspace
+    - name: maven-settings
+    - name: basic-auth
+
