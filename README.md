@@ -114,3 +114,7 @@ The Pipeline can be started when a GitHub Pull is done.  This will send a messag
 10. Click Add webhook to complete the configuration of the webhook in GitHub Enterprise.
 
 Helpful while testing `Tasks`: `tkn task start was-deploy-app --showlog`
+
+---
+
+When using Git with a userid/token or with SSL Key, then a new `Secret` needs to be added, the `Pipeline` needs a new workspace and the `Pipeline-Run` needs to reference the workspace and the `Secret`
