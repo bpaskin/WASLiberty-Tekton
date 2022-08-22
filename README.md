@@ -117,4 +117,4 @@ Helpful while testing `Tasks`: `tkn task start was-deploy-app --showlog`
 
 ---
 
-When using Git with a userid/token or with SSL Key, then a new `Secret` needs to be added, the `Pipeline` needs a new workspace and the `Pipeline-Run` needs to reference the workspace and the `Secret`
+When using Git with a userid/token or with SSL Key, then a new `Secret` needs to be added, the `Pipeline` needs a new workspace and the `Pipeline-Run` needs to reference the workspace and the `Secret`.  Have a [look](https://artifacthub.io/packages/tekton-task/tekton-catalog-tasks/git-clone) at the Git Clone task.  
