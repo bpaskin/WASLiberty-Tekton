@@ -17,10 +17,6 @@ spec:
       description: The project where you deploy the app
       name: DEPLOY_PROJECT
       type: string
-    - default: was-stage
-      description: The project where you promote the app
-      name: PROMOTE_PROJECT
-      type: string
     - default: 'https://github.com/bpaskin/WASLiberty-Tekton'
       description: The project where you promote the app
       name: GIT_URL
@@ -104,6 +100,5 @@ spec:
         name: was-deploy-app
   workspaces:
     - name: shared-workspace
-    - name: maven-settings
     - name: basic-auth
 
