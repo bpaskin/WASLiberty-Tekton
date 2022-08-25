@@ -1,5 +1,5 @@
 
-FROM gradle:latest
+FROM docker.io/gradle:6.9.2-jdk8
 
 RUN ls -al
 
