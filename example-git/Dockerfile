@@ -5,5 +5,7 @@ RUN ls -alR
 
 RUN ls -alR /tmp
 
+RUN ls -al /
+
 RUN keytool -importcert -file /tmp/ca.crt -keystore /opt/java/openjdk/jre/lib/security/cacerts -storepass changeit -noprompt -alias westfield
 
