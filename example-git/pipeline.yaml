@@ -62,6 +62,8 @@ spec:
         - name: TASKS
           value:
             - build
+        - name: GRADLE_IMAGE
+          value: 'image-registry.openshift-image-registry.svc:5000/was-liberty/gradle'
       runAfter:
         - fetch-repository
       taskRef:
