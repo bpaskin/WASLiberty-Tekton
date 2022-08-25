@@ -1,0 +1,33 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: gradle-build-config
+  labels:
+    app: was-liberty
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/bpaskin/WASLiberty-Tekton
+    contextDir: example-git
+    secrets:
+      - secret:
+          name: wfgcerts
+          destinationDir: .
+  strategy:
+    type: Docker                      
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: gradle:latest
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  namespace: was-liberty
+  name: gradle
+spec:
+  lookupPolicy:
+    local: false
