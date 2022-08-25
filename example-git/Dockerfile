@@ -1,5 +1,5 @@
 
-FROM gradle:6.9.2-jdk8
+FROM gradle:latest
 
 RUN ls -al
 
