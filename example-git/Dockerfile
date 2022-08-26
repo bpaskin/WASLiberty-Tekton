@@ -70,3 +70,7 @@ RUN keytool -importcert -file /tmp/cer2.cer -keystore /opt/java/openjdk/jre/lib/
 RUN keytool -importcert -file /tmp/cer3.cer -keystore /opt/java/openjdk/jre/lib/security/cacerts -storepass changeit -noprompt -alias wstcer3
 
 RUN ln -s /opt/java/openjdk /opt/java_1.8_64
+
+RUN mkdir /opt/runtimes \
+    && echo "hello" >  /tmp/hello.txt \
+    && /opt/java/openjdk/bin/jar -cvf /opt/runtimes/j2ee.jar /tmp/hello.txt
