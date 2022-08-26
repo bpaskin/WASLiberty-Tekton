@@ -72,5 +72,5 @@ RUN keytool -importcert -file /tmp/cer3.cer -keystore /opt/java/openjdk/jre/lib/
 RUN ln -s /opt/java/openjdk /opt/java_1.8_64
 
 RUN mkdir /opt/runtimes \
-    && echo "hello" >  /tmp/hello.txt \
-    && /opt/java/openjdk/bin/jar -cvf /opt/runtimes/j2ee.jar /tmp/hello.txt
+    && wget -O /opt/runtimes/j2ee.jar https://repo1.maven.org/maven2/javax/javaee-api/6.0/javaee-api-6.0.jar
+    
