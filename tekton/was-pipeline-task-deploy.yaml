@@ -40,6 +40,8 @@ spec:
                   metric: Virtual Processor Core (VPC)
                   productEntitlementSource: Standalone
                expose: true 
+               route:
+                 termination: edge
                applicationName: $(params.APP_NAME)
                autoscaling:
                   maxReplicas: $(params.MAX_PODS)
