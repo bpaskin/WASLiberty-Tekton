@@ -41,7 +41,7 @@ spec:
                   productEntitlementSource: Standalone
                expose: true 
                route:
-                 termination: edge
+                 termination: passthrough
                applicationName: $(params.APP_NAME)
                autoscaling:
                   maxReplicas: $(params.MAX_PODS)
