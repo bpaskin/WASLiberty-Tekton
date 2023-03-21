@@ -118,3 +118,32 @@ Helpful while testing `Tasks`: `tkn task start was-deploy-app --showlog`
 ---
 
 When using Git with a userid/token or with SSL Key, then a new `Secret` needs to be added, the `Pipeline` needs a new workspace and the `Pipeline-Run` needs to reference the workspace and the `Secret`.  Have a [look](https://artifacthub.io/packages/tekton-task/tekton-catalog-tasks/git-clone) at the Git Clone task.  
+
+---
+
+To containerize this application locally Git CLI, Maven, Java, and Podman or Docker are required.  I tested this with Java 8, 11, and 17.
+
+1. Clone the repo: </br>
+```
+git clone https://github.com/bpaskin/WASLiberty-Tekton.git
+```
+2. Change directory 
+```
+cd WASLiberty-Tekton
+```
+3. Build and package with Maven
+```
+mvn package
+```
+4. Create the image
+```
+podman/docker build -t modresorts .
+```
+5. Start the container
+```
+podman/docker run -d --name modresorts -p 9080:9080 modresorts
+```
+7. Test
+```
+http://hostname:9080
+```
