@@ -5,4 +5,4 @@ COPY server.xml                /config/server.xml
 COPY jvm.options               /config/jvm.options
 
 RUN configure.sh
-RUN checkpoint.sh afterAppStart
+#RUN checkpoint.sh afterAppStart
