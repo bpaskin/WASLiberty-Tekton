@@ -63,14 +63,4 @@ spec:
                  secret:
                    secretName: open-liberty-vars
                    optional: true
-               securityContext:
-                  allowPrivilegeEscalation: true
-                  privileged: false
-                  runAsNonRoot: true
-                  capabilities:
-                     add:
-                     - CHECKPOINT_RESTORE
-                     - SETPCAP
-                     drop:
-                     - ALL
             EOF
